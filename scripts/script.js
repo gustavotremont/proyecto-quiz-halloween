@@ -10,9 +10,9 @@
         template.setAttribute('id', 'inicio')
         template.innerHTML = `
         <div class='flex-container'>
-            <h2>Bienvanido al quiz</h2>
-            <label for="name">Escriba su nombre</label>
-            <input type="text" id="name">
+            <h2><u>BIENVENIDO AL QUIZ</u></h2>
+            <label for="name">Por favor, escriba su nombre :</label><br>
+            <input type="text" id="name"><br>
             <button id="startQuiz">Comenzar</button>
         </div>
         `;
@@ -52,23 +52,19 @@
         <section id='questionContainer'>
             <h2>${quiz[count].question}</h2>
             <div id='answerContainer'>
-                <div>
-                    <label for='question_${count+1}_1'>${quiz[count].Answers[0]}</label>
-                    <input type='radio' id='question_${count+1}_1' name='question_${count+1}' value='${quiz[count].Answers[0].toLowerCase()}'>
+                <div id="respuestasAYB">
+                    <label for='question_${count+1}_1' class="first">${quiz[count].Answers[0]}</label>
+                    <input type='radio' id='question_${count+1}_1' class="selector" name='question_${count+1}' value='${quiz[count].Answers[0].toLowerCase()}'>
+                    <label for='question_${count+1}_2' class="second">${quiz[count].Answers[1]}</label>
+                    <input type='radio' id='question_${count+1}_2' class="selector" name='question_${count+1}' value='${quiz[count].Answers[1].toLowerCase()}'>
                 </div>
-                <div>
-                    <label for='question_${count+1}_2'>${quiz[count].Answers[1]}</label>
-                    <input type='radio' id='question_${count+1}_2' name='question_${count+1}' value='${quiz[count].Answers[1].toLowerCase()}'>
+                <div id="respuestasCYD">
+                    <label for='question_${count+1}_3' class="third">${quiz[count].Answers[2]}</label>
+                    <input type='radio' id='question_${count+1}_3' class="selector" name='question_${count+1}' value='${quiz[count].Answers[2].toLowerCase()}'>
+                    <label for='question_${count+1}_4' class="fourth">${quiz[count].Answers[3]}</label>
+                    <input type='radio' id='question_${count+1}_4' class="selector" name='question_${count+1}' value='${quiz[count].Answers[3].toLowerCase()}'>
                 </div>
-                <div>
-                    <label for='question_${count+1}_3'>${quiz[count].Answers[2]}</label>
-                    <input type='radio' id='question_${count+1}_3' name='question_${count+1}' value='${quiz[count].Answers[2].toLowerCase()}'>
-                </div>
-                <div>
-                    <label for='question_${count+1}_4'>${quiz[count].Answers[3]}</label>
-                    <input type='radio' id='question_${count+1}_4' name='question_${count+1}' value='${quiz[count].Answers[3].toLowerCase()}'>
-                </div>
-            </div>
+            </div><br>
             <button id="next">Siguiente pregunta</button>
         </section>`;
         document.getElementById('gallery').appendChild(template)
