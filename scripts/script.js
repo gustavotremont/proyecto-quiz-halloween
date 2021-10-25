@@ -1,10 +1,11 @@
-
+    //inicializacion de variables
     let correctAnswers;
     let selectAnswers;
     let count;
     let quiz;
     let concursant;
     
+    //pagina principal
     const inicio = () => {
         const template = document.createElement('section')
         template.setAttribute('id', 'inicio')
@@ -22,6 +23,7 @@
         })
     }
     
+    //funcion para comenzar el quiz
     const startQuiz = async () => {
         selectAnswers = [];
         count = 0;
@@ -30,12 +32,13 @@
         playQuiz()
     }
     
+    //funcion para obtener las preguntas
     const getQuestions = async () => {
         const respond = await fetch('https://opentdb.com/api.php?amount=10&category=15&difficulty=medium&type=multiple');
         const data = await respond.json();
         correctAnswers = []
         const questions = data.results.map(({question, correct_answer, incorrect_answers}) => {
-            correctAnswers.push(correct_answer)
+            correctAnswers.push(decodeHTMLEntities(correct_answer).toLowerCase())
             return {
                 question: question,
                 Answers: shuffleArray([...incorrect_answers, correct_answer])
@@ -44,6 +47,7 @@
         return questions
     }
     
+    //funcion que pinta la pregunta y añade la funcion a los botones
     const playQuiz = () => {
         document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1])
         const template = document.createElement('section')
@@ -87,6 +91,7 @@
         count++
     }
     
+    //funcion para terminar el quiz
     const finishQuiz = () => {
         let score = 0;
         for(let i = 0; i<10; i++) {
@@ -122,4 +127,21 @@
           array[j] = temp;
         }
         return array
+    }
+
+    //funcion para decodificar caracteres especiales
+    const decodeHTMLEntities = (str) => {
+
+        let element = document.createElement('div');
+
+        if(str && typeof str === 'string') {
+        // strip script/html tags
+        str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
+        str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
+        element.innerHTML = str;
+        str = element.textContent;
+        element.textContent = '';
+        }
+    
+        return str;
     }
