@@ -41,9 +41,13 @@
             correctAnswers.push(decodeHTMLEntities(correct_answer).toLowerCase())
             return {
                 question: question,
-                Answers: shuffleArray([...incorrect_answers, correct_answer])
+                Answers: shuffleArray([
+                    ...incorrect_answers.map(element => decodeHTMLEntities(element)), 
+                    decodeHTMLEntities(correct_answer) 
+                ])
             }
         })
+        console.log(questions)
         return questions
     }
     
@@ -58,19 +62,19 @@
             <div id='answerContainer'>
                 <div>
                     <label for='question_${count+1}_1'>${quiz[count].Answers[0]}</label>
-                    <input type='radio' id='question_${count+1}_1' name='question_${count+1}' value='${quiz[count].Answers[0].toLowerCase()}'>
+                    <input type='radio' id='question_${count+1}_1' name='question_${count+1}' value='${quiz[count].Answers[0]}'>
                 </div>
                 <div>
                     <label for='question_${count+1}_2'>${quiz[count].Answers[1]}</label>
-                    <input type='radio' id='question_${count+1}_2' name='question_${count+1}' value='${quiz[count].Answers[1].toLowerCase()}'>
+                    <input type='radio' id='question_${count+1}_2' name='question_${count+1}' value='${quiz[count].Answers[1]}'>
                 </div>
                 <div>
                     <label for='question_${count+1}_3'>${quiz[count].Answers[2]}</label>
-                    <input type='radio' id='question_${count+1}_3' name='question_${count+1}' value='${quiz[count].Answers[2].toLowerCase()}'>
+                    <input type='radio' id='question_${count+1}_3' name='question_${count+1}' value='${quiz[count].Answers[2]}'>
                 </div>
                 <div>
                     <label for='question_${count+1}_4'>${quiz[count].Answers[3]}</label>
-                    <input type='radio' id='question_${count+1}_4' name='question_${count+1}' value='${quiz[count].Answers[3].toLowerCase()}'>
+                    <input type='radio' id='question_${count+1}_4' name='question_${count+1}' value='${quiz[count].Answers[3]}'>
                 </div>
             </div>
             <button id="next">Siguiente pregunta</button>
@@ -145,3 +149,7 @@
     
         return str;
     }
+
+    console.log('Who is the main character of &quot;Metal Gear Solid 3&quot;?')
+    const element = [decodeHTMLEntities('Who is the main character of &quot;Metal Gear Solid 3&quot;?')]
+    console.log(element);
