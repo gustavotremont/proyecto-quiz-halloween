@@ -50,6 +50,9 @@ h2{
 
 /* MODIFICACIÓN DEL CUESTIONARIO */
 
+#answerContainer{
+    padding-left: 10px;
+}
 
 #questionContainer {
     display: flex;
@@ -71,17 +74,11 @@ h2{
     text-shadow: 0.1em 0.1em  purple;
 }
 
-#respuestasAYB {
+#respuestasAYB , #respuestasCYD{
     display: flex;
     justify-content: center;
-    padding: 30px;
+    padding: 20px;
     
-}
-
-#respuestasCYD {
-    display: flex;
-    justify-content: center;
-    padding: 30px;
 }
 
 #next {
