@@ -1,3 +1,22 @@
+    //inicializacion de firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js";
+    import { getFirestore, collection, getDocs, setDoc, doc, addDoc, getDoc } from 'https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js';
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.1.2/firebase-auth.js';
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAhdfqYicrW1ARKH1um867kA-4tGXX0qno",
+        authDomain: "proyectoquizhalloween.firebaseapp.com",
+        projectId: "proyectoquizhalloween",
+        storageBucket: "proyectoquizhalloween.appspot.com",
+        messagingSenderId: "159271340949",
+        appId: "1:159271340949:web:467b879b062ac54868049c",
+        measurementId: "G-GX2L65LD06"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    
     //inicializacion de variables
     let correctAnswers;
     let selectAnswers;
@@ -6,29 +25,41 @@
     let concursant;
     
     //pagina principal
-    const inicio = () => {
+    const inicio = async() => {
+
+        const docRef = doc(db, "users", auth.currentUser.uid);
+        const docSnap = await getDoc(docRef);
+
         const template = document.createElement('section')
         template.setAttribute('id', 'inicio')
         template.innerHTML = `
         <div class='flex-container'>
             <h2><u>BIENVENIDO AL QUIZ</u></h2>
-            <label for="name">Por favor, escriba su nombre :</label><br>
-            <input type="text" id="name"><br>
+            <p>${docSnap.data().nickname}</p>
             <button id="startQuiz">Comenzar</button>
+            <button id="exitQuiz">Salir</button>
         </div>
         `;
         document.getElementById('gallery').appendChild(template)
         document.getElementById('startQuiz').addEventListener('click', () => {
-            if(document.getElementById('name').value != "") { startQuiz() };
+            document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1])
+            startQuiz(docSnap.username) 
+        })
+        document.getElementById('exitQuiz').addEventListener('click', (e) => {
+            e.preventDefault();
+            signOut(auth).then(() => {
+                alert('sesion acabada');
+                login(docSnap.data().nickname);
+            }).catch((error) => alert(error.code, error.message) );
         })
     }
     
     //funcion para comenzar el quiz
-    const startQuiz = async () => {
+    const startQuiz = async (username) => {
         selectAnswers = [];
         count = 0;
         quiz = await getQuestions().then(data => data);
-        concursant = document.getElementById('name').value;
+        concursant = username;
         playQuiz()
     }
     
@@ -61,15 +92,15 @@
             <h2 id="question">${quiz[count].question}</h2>
             <div id='answerContainer'>
                 <div id="respuestasAYB">
-                    <input type='radio' id='question_${count+1}_1' class="selector" name='question_${count+1}' value='${quiz[count].Answers[0]}'>
+                    <input type='radio' id='question_${count+1}_1' class="selector" name='question_${count+1}' value='${quiz[count].Answers[0].toLowerCase()}'>
                     <label for='question_${count+1}_1' class="firstAnswer">${quiz[count].Answers[0]}</label>
-                    <input type='radio' id='question_${count+1}_2' class="selector" name='question_${count+1}' value='${quiz[count].Answers[1]}'>
+                    <input type='radio' id='question_${count+1}_2' class="selector" name='question_${count+1}' value='${quiz[count].Answers[1].toLowerCase()}'>
                     <label for='question_${count+1}_2' class="secondAnswer">${quiz[count].Answers[1]}</label>
                 </div>
                 <div id="respuestasCYD">
-                    <input type='radio' id='question_${count+1}_3' class="selector" name='question_${count+1}' value='${quiz[count].Answers[2]}'>
+                    <input type='radio' id='question_${count+1}_3' class="selector" name='question_${count+1}' value='${quiz[count].Answers[2].toLowerCase()}'>
                     <label for='question_${count+1}_3' class="thirdAnswer">${quiz[count].Answers[2]}</label>
-                    <input type='radio' id='question_${count+1}_4' class="selector" name='question_${count+1}' value='${quiz[count].Answers[3]}'>
+                    <input type='radio' id='question_${count+1}_4' class="selector" name='question_${count+1}' value='${quiz[count].Answers[3].toLowerCase()}'>
                     <label for='question_${count+1}_4' class="fourthAnswer">${quiz[count].Answers[3]}</label>
                 </div>
             </div><br>
@@ -97,9 +128,7 @@
         for(let i = 0; i<10; i++) {
             if(selectAnswers[i] == correctAnswers[i]) score++;
         }
-        console.log(selectAnswers)
-        console.log(correctAnswers)
-        console.log(score)
+
         document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1]);
         const template = document.createElement('section')
         template.setAttribute('id', 'quiz')
@@ -118,8 +147,85 @@
             inicio()
         })
     }
+
+    const login = () => {
+        document.getElementById('gallery').innerHTML = `
+            <form id="formBody">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password">
+                <input type="submit" id="login" value="login">
+                <button id="singin">Sign In</button>
+            </form>
+        `
+        document.getElementById('login').addEventListener('click', (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('formBody').email.value;
+            const pass = document.getElementById('formBody').password.value;
+
+            signInWithEmailAndPassword(auth, email, pass)
+            .then( () => {
+                document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1])
+                inicio() 
+            })
+            .catch( error => alert(error.code, error.message) );
+
+        })
+        document.getElementById('singin').addEventListener('click', () => singin() )
+    } 
+
+    const singin = () => {
+        document.getElementById('gallery').innerHTML = `
+            <form id="formBody">
+                <label for="nickname">Nickname</label>
+                <input type="text" id="nickname" name="nickname">
+
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email">
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password">
+                
+                <label for="repeatPassword">Repeat Password</label>
+                <input type="password" id="repeatPassword" name="repeatPassword">
+
+                <input type="submit" id="singinUser" value="singin">
+                <button id="backToLogin">Back To Login</button>
+            </form>
+        `
+        document.getElementById('singinUser').addEventListener('click', (e) => {
+            e.preventDefault();
+            const form = document.getElementById('formBody');
+            const username = form.nickname.value;
+            const email = form.email.value;
+            const pass = form.password.value
+            const repeatPass = form.repeatPassword.value
+
+            if( pass != "" && repeatPass != "" && pass === repeatPass){
+                
+                createUserWithEmailAndPassword(auth, email, pass)
+                .then( userCrentials => {
+                    const user = userCrentials.user
+
+                    setDoc(doc(db,"users",user.uid),{
+                        nickname: username,
+                        email: email
+                    });
+
+                    alert('usuario creado!')
+
+                    login()
+                })
+                .catch( error => alert(error.code, error.message) );
+                
+            }else alert('las contraseñas no coinciden')
+        })
+        document.getElementById('backToLogin').addEventListener('click', () => login())
+    }
     
-    inicio()
+    login()
     
     //Fisher-Yates algorith
     const shuffleArray = array => {
