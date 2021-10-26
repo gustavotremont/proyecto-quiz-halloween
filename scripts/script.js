@@ -62,19 +62,19 @@
             <div id='answerContainer'>
                 <div>
                     <label for='question_${count+1}_1'>${quiz[count].Answers[0]}</label>
-                    <input type='radio' id='question_${count+1}_1' name='question_${count+1}' value='${quiz[count].Answers[0]}'>
+                    <input type='radio' id='question_${count+1}_1' name='question_${count+1}' value='${quiz[count].Answers[0].toLowerCase()}'>
                 </div>
                 <div>
                     <label for='question_${count+1}_2'>${quiz[count].Answers[1]}</label>
-                    <input type='radio' id='question_${count+1}_2' name='question_${count+1}' value='${quiz[count].Answers[1]}'>
+                    <input type='radio' id='question_${count+1}_2' name='question_${count+1}' value='${quiz[count].Answers[1].toLowerCase()}'>
                 </div>
                 <div>
                     <label for='question_${count+1}_3'>${quiz[count].Answers[2]}</label>
-                    <input type='radio' id='question_${count+1}_3' name='question_${count+1}' value='${quiz[count].Answers[2]}'>
+                    <input type='radio' id='question_${count+1}_3' name='question_${count+1}' value='${quiz[count].Answers[2].toLowerCase()}'>
                 </div>
                 <div>
                     <label for='question_${count+1}_4'>${quiz[count].Answers[3]}</label>
-                    <input type='radio' id='question_${count+1}_4' name='question_${count+1}' value='${quiz[count].Answers[3]}'>
+                    <input type='radio' id='question_${count+1}_4' name='question_${count+1}' value='${quiz[count].Answers[3].toLowerCase()}'>
                 </div>
             </div>
             <button id="next">Siguiente pregunta</button>
@@ -140,16 +140,12 @@
 
         if(str && typeof str === 'string') {
         // strip script/html tags
-        str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
-        str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
-        element.innerHTML = str;
-        str = element.textContent;
-        element.textContent = '';
+        // str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
+        // str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
+            element.innerHTML = str;
+            str = element.textContent;
+            element.textContent = '';
         }
     
         return str;
     }
-
-    console.log('Who is the main character of &quot;Metal Gear Solid 3&quot;?')
-    const element = [decodeHTMLEntities('Who is the main character of &quot;Metal Gear Solid 3&quot;?')]
-    console.log(element);
