@@ -142,6 +142,32 @@ input:checked + label{
     box-shadow: 0.1em 0em 1em red;
 }
 
+/* MEDIA_QUERY */
+
+@media only screen and (max-width: 400px){
+    #respuestasAYB {
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 0;
+    }
+
+    #respuestasCYD {
+        display: flex;
+        flex-direction: column;
+        padding-top: 10px; 
+    }
+
+    #question{
+        font-size: 25px;
+    }
+
+    .firstAnswer, .thirdAnswer{
+        margin-bottom: 10px;
+    }
+}
+
+
+
 /* MODIFICACIÓN DE PUNTUACIÓN */
 
 #finalHeader{
