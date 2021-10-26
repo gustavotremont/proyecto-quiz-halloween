@@ -50,19 +50,19 @@
         template.setAttribute('id', 'quiz')
         template.innerHTML = `
         <section id='questionContainer'>
-            <h2>${quiz[count].question}</h2>
+            <h2 id="question">${quiz[count].question}</h2>
             <div id='answerContainer'>
                 <div id="respuestasAYB">
-                    <label for='question_${count+1}_1' class="first">${quiz[count].Answers[0]}</label>
-                    <input type='radio' id='question_${count+1}_1' class="selector" name='question_${count+1}' value='${quiz[count].Answers[0].toLowerCase()}'>
-                    <label for='question_${count+1}_2' class="second">${quiz[count].Answers[1]}</label>
-                    <input type='radio' id='question_${count+1}_2' class="selector" name='question_${count+1}' value='${quiz[count].Answers[1].toLowerCase()}'>
+                    <input type='radio' id='question_${count+1}_1' class="selector" name='question_${count+1}' value='${quiz[count].Answers[0]}'>
+                    <label for='question_${count+1}_1' class="firstAnswer">${quiz[count].Answers[0]}</label>
+                    <input type='radio' id='question_${count+1}_2' class="selector" name='question_${count+1}' value='${quiz[count].Answers[1]}'>
+                    <label for='question_${count+1}_2' class="secondAnswer">${quiz[count].Answers[1]}</label>
                 </div>
                 <div id="respuestasCYD">
-                    <label for='question_${count+1}_3' class="third">${quiz[count].Answers[2]}</label>
-                    <input type='radio' id='question_${count+1}_3' class="selector" name='question_${count+1}' value='${quiz[count].Answers[2].toLowerCase()}'>
-                    <label for='question_${count+1}_4' class="fourth">${quiz[count].Answers[3]}</label>
-                    <input type='radio' id='question_${count+1}_4' class="selector" name='question_${count+1}' value='${quiz[count].Answers[3].toLowerCase()}'>
+                    <input type='radio' id='question_${count+1}_3' class="selector" name='question_${count+1}' value='${quiz[count].Answers[2]}'>
+                    <label for='question_${count+1}_3' class="thirdAnswer">${quiz[count].Answers[2]}</label>
+                    <input type='radio' id='question_${count+1}_4' class="selector" name='question_${count+1}' value='${quiz[count].Answers[3]}'>
+                    <label for='question_${count+1}_4' class="fourthAnswer">${quiz[count].Answers[3]}</label>
                 </div>
             </div><br>
             <button id="next">Siguiente pregunta</button>
@@ -70,7 +70,7 @@
         document.getElementById('gallery').appendChild(template)
         document.getElementById('next').addEventListener('click', () => {
             const selected = document.querySelector(`input[name="question_${count}"]:checked`)
-            selectAnswers.push(selected.value.toLowerCase())
+            selectAnswers.push(selected.value)
             if(count != 10) {
                 if(selected){
                     playQuiz() 
@@ -96,9 +96,12 @@
         template.setAttribute('id', 'quiz')
         template.innerHTML = `
         <section id='questionContainer'>
-            <h2>Felicidades ${concursant}</h2>
-            <p>puntuación: ${score} de 10 preguntas<p>
-            <button id="submit">finalizar</button>
+            <h2 id="finalHeader">Felicidades ${concursant}</h2>
+            <div id="stats">
+                <p id="finalParragraph">Puntuación:<p>
+                <p id="finalScore">${score} /  10</p>
+            </div>
+            <button id="submit">Finalizar</button>
         </section>`;
         document.getElementById('gallery').appendChild(template)
         document.getElementById('submit').addEventListener('click', () => {
