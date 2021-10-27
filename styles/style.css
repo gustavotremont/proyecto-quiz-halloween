@@ -12,16 +12,10 @@ body {
 
 /* MODIFICACIÓN DEL INICIO DE SESIÓN */
 
-#usuario, #password, #correo {
+#usuario, #password, #email, #nickname, #repeatPassword  {
     border-radius: 9px;
 }
 
-#inicioSesion, #registro, #crearCuenta {
-    margin: auto;
-    font-family: 'Indie Flower', cursive;
-    font-weight: bold;
-    box-shadow: 0.1em 0em 1em orange;
-}
 
 
 
