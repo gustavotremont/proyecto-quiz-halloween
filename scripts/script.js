@@ -31,6 +31,10 @@
 
         const docRef = doc(db, "users", auth.currentUser.uid);
         const docSnap = await getDoc(docRef);
+        // .collection("Orders/orderid123/Products").get()
+        // const prueba = collection(db, "users", auth.currentUser.uid, "partida").get();
+        // const getDocPrueba = await getDocs(prueba);
+        // console.log(getDocPrueba)
         const template = document.createElement('section')
         template.setAttribute('id', 'inicio')
         template.innerHTML = `
@@ -132,11 +136,16 @@
     }
     
     //funcion para terminar el quiz
-    const finishQuiz = () => {
+    const finishQuiz = async() => {
         let score = 0;
         for(let i = 0; i<10; i++) {
             if(selectAnswers[i] == correctAnswers[i]) score++;
         }
+        
+        const docRef = await addDoc(collection(db, "users", auth.currentUser.uid, "partida"), {
+            fecha: date,
+            puntuacion: score
+        });
 
         document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1]);
         const template = document.createElement('section')
@@ -161,13 +170,13 @@
         <div class='flex-container'>
             <h2>Inicia sesión</h2>
             <form id="formBody">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email">
+                <label for="email">Email</label><br>
+                <input type="email" id="email" name="email"><br><br>
                 
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password">
+                <label for="password">Password</label><br>
+                <input type="password" id="password" name="password"><br><br>
                 
-                <input type="submit" id="login" value="login">
+                <input type="submit" id="login" value="Log in">
                 <button id="singin">Sign In</button>
             </form>
         </div>
@@ -200,19 +209,19 @@
         <div class='flex-container'>
             <h2>Nueva cuenta</h2>
             <form id="formBody">
-                <label for="nickname">Nickname</label>
-                <input type="text" id="nickname" name="nickname">
+                <label for="nickname">Nickname</label><br>
+                <input type="text" id="nickname" name="nickname"><br><br>
 
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email">
+                <label for="email">Email</label><br>
+                <input type="email" id="email" name="email"><br><br>
 
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password">
+                <label for="password">Password</label><br>
+                <input type="password" id="password" name="password"><br><br>
                 
-                <label for="repeatPassword">Repeat Password</label>
-                <input type="password" id="repeatPassword" name="repeatPassword">
+                <label for="repeatPassword">Repeat Password</label><br>
+                <input type="password" id="repeatPassword" name="repeatPassword"><br><br>
 
-                <input type="submit" id="singinUser" value="singin">
+                <input type="submit" id="singinUser" value="Sign in">
                 <button id="backToLogin">Back To Login</button>
             </form>
         </div>
