@@ -35,7 +35,7 @@
         template.setAttribute('id', 'inicio')
         template.innerHTML = `
         <div class='flex-container'>
-           <h2><u>BIENVENIDO AL QUIZ</u></h2>
+           <h2>BIENVENIDO AL QUIZ</h2>
             <p>${docSnap.data().nickname}</p>
             <button id="startQuiz">Comenzar</button>
             <button id="exitQuiz">Salir</button>
@@ -43,13 +43,13 @@
         `;
         document.getElementById('gallery').appendChild(template)
         document.getElementById('startQuiz').addEventListener('click', () => {
-            document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1])
             startQuiz(docSnap.username) 
         })
         document.getElementById('exitQuiz').addEventListener('click', (e) => {
             e.preventDefault();
             signOut(auth).then(() => {
                 alert('sesion acabada');
+                document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1]);
                 login();
             }).catch((error) => alert(error.code, error.message) );
         })
@@ -149,6 +149,7 @@
         </section>`;
         document.getElementById('gallery').appendChild(template)
         document.getElementById('submit').addEventListener('click', () => {
+            document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1]);
             inicio();
         })
     }
@@ -245,7 +246,10 @@
                 
             }else alert('las contraseñas no coinciden')
         })
-        document.getElementById('backToLogin').addEventListener('click', () => login())
+        document.getElementById('backToLogin').addEventListener('click', () => {
+            document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1]);
+            login()
+        } )
     }
     
     login()
