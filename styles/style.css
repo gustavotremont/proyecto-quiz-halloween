@@ -9,6 +9,22 @@ body {
     background-image: url(https://media.istockphoto.com/photos/jack-o-lanterns-in-spooky-forest-at-moonlight-halloween-picture-id1177824148?k=20&m=1177824148&s=612x612&w=0&h=mX4PgLy6hntUy_FRtG0byLlNStvEZuJbvCtyQBUoReQ=);
 }
 
+
+/* MODIFICACIÓN DEL INICIO DE SESIÓN */
+
+#usuario, #password, #correo {
+    border-radius: 9px;
+}
+
+#inicioSesion, #registro, #crearCuenta {
+    margin: auto;
+    font-family: 'Indie Flower', cursive;
+    font-weight: bold;
+    box-shadow: 0.1em 0em 1em orange;
+}
+
+
+
 /* MODIFICACIÓN DEL DOM HOME */
 
 .flex-container{
@@ -25,16 +41,26 @@ body {
     border-radius: 15px;   
     background-color:rgba(12, 6, 6, 0.712);
     box-shadow: 0.25em 0.25em 1em rgb(248, 80, 2);
-    color: rgba(9, 146, 238, 0.76);
+    color: #e9d362; 
+    font-weight: bold;
 }
 
 h2{
     font-family: 'Bebas Neue', cursive;
     font-size: 30px;
+    color: #e9d362; 
+    text-shadow: 0.1em 0.15em rgb(0, 0, 0);
 }
 
-#name {
-    border-radius: 9px;
+#fecha {
+    font-family: 'Bebas Neue', cursive ;
+    font-weight: bold;
+    font-size: 25px;
+    background-color: rgba(214, 170, 113, 0.76) ;
+    border-radius: 3px;
+    color:rgb(255, 255, 255);
+    text-shadow:  0.02em 0.15em black;
+    box-shadow: 0.2em 0.2em rgb(2, 2, 2);
 }
 
 #startQuiz {
@@ -44,8 +70,8 @@ h2{
     box-shadow: 0.1em 0em 1em orange;
 }
 
-#startQuiz:hover {
-    background-color: rgba(9, 146, 238, 0.76);
+#startQuiz:hover, #inicioSesion:hover, #registro:hover , #crearCuenta:hover {
+    background-color: rgba(83, 136, 172, 0.76);
 }
 
 /* MODIFICACIÓN DEL CUESTIONARIO */
@@ -205,7 +231,9 @@ input:checked + label{
     margin: auto;
     font-family: 'Indie Flower', cursive;
     font-weight: bold;
-    font-size: 16px;
-    background-color: rgb(255, 255, 255);
-    border: none;
+    box-shadow: 0.1em 0em 1em orange;
+}
+
+#submit:hover {
+    background-color: rgba(83, 136, 172, 0.76);
 }
