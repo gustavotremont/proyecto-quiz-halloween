@@ -38,11 +38,7 @@
         const data = await respond.json();
         correctAnswers = []
         const questions = data.results.map(({question, correct_answer, incorrect_answers}) => {
-<<<<<<< HEAD
-            correctAnswers.push(correct_answer.toLowerCase())
-=======
             correctAnswers.push(decodeHTMLEntities(correct_answer).toLowerCase())
->>>>>>> 60e917772991abc456d94eb45647f60fac712570
             return {
                 question: question,
                 Answers: shuffleArray([
