@@ -31,10 +31,6 @@
 
         const docRef = doc(db, "users", auth.currentUser.uid);
         const docSnap = await getDoc(docRef);
-        // .collection("Orders/orderid123/Products").get()
-        // const prueba = collection(db, "users", auth.currentUser.uid, "partida").get();
-        // const getDocPrueba = await getDocs(prueba);
-        // console.log(getDocPrueba)
         const template = document.createElement('section')
         template.setAttribute('id', 'inicio')
         template.innerHTML = `
@@ -42,10 +38,16 @@
            <h2>BIENVENIDO AL QUIZ</h2>
             <p>${docSnap.data().nickname}</p>
             <button id="startQuiz">Comenzar</button><br>
+            <div class='grafica'>
+                <h2>Tus estadisticas:</h2>
+                <div class="ct-chart ct-perfect-fourth" id="chart1"></div>
+            </div><br><br>
             <button id="exitQuiz">Salir</button>
         </div>
+        
         `;
         document.getElementById('gallery').appendChild(template)
+        nexoPintado();
         document.getElementById('startQuiz').addEventListener('click', () => {
             startQuiz(docSnap.username) 
         })
@@ -58,6 +60,41 @@
             }).catch((error) => alert(error.code, error.message) );
         })
     }
+
+    //Funciones para pintar la grafica
+
+    const sacarDatos = async() => {
+        let puntajes = [];
+        let fechas = [];
+        const querySnapshot = await getDocs(collection(db, "users", auth.currentUser.uid, "partida"));
+        querySnapshot.forEach((doc) => {
+            puntajes.push(doc.data().puntuacion);
+            fechas.push(doc.data().fecha);
+        });
+        return [puntajes,fechas];
+    }
+
+    const opcionesGrafica = ([puntajes,fechas]) => {
+        let datos_graficos = {
+            labels: fechas,
+            series: [puntajes]        
+        };
+
+        let options_graficos = {
+            low: 0,
+            high : 10,
+            axisY: {
+                onlyInteger: true
+            }
+        };
+        new Chartist.Line('#chart1', datos_graficos,options_graficos);
+    }
+
+    const nexoPintado = async() => {
+        let nombres = await sacarDatos(data => data);
+        opcionesGrafica(nombres);
+    }
+
     
     //funcion para comenzar el quiz
     const startQuiz = async (username) => {
