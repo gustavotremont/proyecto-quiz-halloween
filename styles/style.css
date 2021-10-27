@@ -35,7 +35,7 @@ body {
     border-radius: 15px;   
     background-color:rgba(12, 6, 6, 0.712);
     box-shadow: 0.25em 0.25em 1em rgb(248, 80, 2);
-    color: #e9d362; 
+    color: #11f71c; 
     font-weight: bold;
 }
 
@@ -64,7 +64,12 @@ h2{
     box-shadow: 0.1em 0em 1em orange;
 }
 
-#startQuiz:hover, #inicioSesion:hover, #registro:hover , #crearCuenta:hover {
+#exitQuiz {
+    font-weight: bold;
+    box-shadow: 0.1em 0em 1em orange;
+}
+
+#startQuiz:hover, #inicioSesion:hover, #registro:hover , #crearCuenta:hover , #exitQuiz:hover{
     background-color: rgba(83, 136, 172, 0.76);
 }
 
