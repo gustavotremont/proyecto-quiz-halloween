@@ -35,7 +35,7 @@
         const data = await respond.json();
         correctAnswers = []
         const questions = data.results.map(({question, correct_answer, incorrect_answers}) => {
-            correctAnswers.push(correct_answer)
+            correctAnswers.push(correct_answer.toLowerCase())
             return {
                 question: question,
                 Answers: shuffleArray([...incorrect_answers, correct_answer])
