@@ -41,7 +41,7 @@
         <div class='flex-container'>
            <h2>BIENVENIDO AL QUIZ</h2>
             <p>${docSnap.data().nickname}</p>
-            <button id="startQuiz">Comenzar</button>
+            <button id="startQuiz">Comenzar</button><br>
             <button id="exitQuiz">Salir</button>
         </div>
         `;
