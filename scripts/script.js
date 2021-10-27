@@ -23,18 +23,19 @@
     let count;
     let quiz;
     let concursant;
-    
+    let date;
+
     //pagina principal
+
     const inicio = async() => {
 
         const docRef = doc(db, "users", auth.currentUser.uid);
         const docSnap = await getDoc(docRef);
-
         const template = document.createElement('section')
         template.setAttribute('id', 'inicio')
         template.innerHTML = `
         <div class='flex-container'>
-            <h2><u>BIENVENIDO AL QUIZ</u></h2>
+           <h2><u>BIENVENIDO AL QUIZ</u></h2>
             <p>${docSnap.data().nickname}</p>
             <button id="startQuiz">Comenzar</button>
             <button id="exitQuiz">Salir</button>
@@ -60,6 +61,14 @@
         count = 0;
         quiz = await getQuestions().then(data => data);
         concursant = username;
+      
+      //PARA SACAR LA FECHA DEL DIA QUE SE REALIZA EL QUIZ
+        let fecha = new Date();
+        let month = fecha.getUTCMonth() + 1;
+        let day = fecha.getUTCDate();
+        let year = fecha.getUTCFullYear();
+        date = day+"/"+month+"/"+year;
+  
         playQuiz()
     }
     
@@ -109,7 +118,7 @@
         document.getElementById('gallery').appendChild(template)
         document.getElementById('next').addEventListener('click', () => {
             const selected = document.querySelector(`input[name="question_${count}"]:checked`)
-            selectAnswers.push(selected.value)
+            selectAnswers.push(selected.value.toLowerCase())
             if(count != 10) {
                 if(selected){
                     playQuiz() 
@@ -134,31 +143,36 @@
         template.setAttribute('id', 'quiz')
         template.innerHTML = `
         <section id='questionContainer'>
-            <h2 id="finalHeader">Felicidades ${concursant}</h2>
-            <div id="stats">
-                <p id="finalParragraph">Puntuación:<p>
-                <p id="finalScore">${score} /  10</p>
-            </div>
+            <h2 id="finalHeader">Tu puntuación final es:</h2>
+            <p id="finalScore">${score} /  10</p>
             <button id="submit">Finalizar</button>
         </section>`;
         document.getElementById('gallery').appendChild(template)
         document.getElementById('submit').addEventListener('click', () => {
-            document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1])
-            inicio()
+            inicio();
         })
     }
 
     const login = () => {
-        document.getElementById('gallery').innerHTML = `
+      const log = document.createElement('section')
+        log.setAttribute('id', 'loggeate')
+        log.innerHTML = `
+        <div class='flex-container'>
+            <h2>Inicia sesión</h2>
             <form id="formBody">
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email">
+                
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password">
+                
                 <input type="submit" id="login" value="login">
                 <button id="singin">Sign In</button>
             </form>
-        `
+        </div>
+        `;
+        document.getElementById('gallery').appendChild(log)
+    
         document.getElementById('login').addEventListener('click', (e) => {
             e.preventDefault();
 
@@ -177,7 +191,13 @@
     } 
 
     const singin = () => {
-        document.getElementById('gallery').innerHTML = `
+      
+      document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1])
+        const sign = document.createElement('section')
+        sign.setAttribute('id', 'signin')
+        sign.innerHTML = `
+        <div class='flex-container'>
+            <h2>Nueva cuenta</h2>
             <form id="formBody">
                 <label for="nickname">Nickname</label>
                 <input type="text" id="nickname" name="nickname">
@@ -194,7 +214,10 @@
                 <input type="submit" id="singinUser" value="singin">
                 <button id="backToLogin">Back To Login</button>
             </form>
-        `
+        </div>
+        `;
+        document.getElementById('gallery').appendChild(sign)
+      
         document.getElementById('singinUser').addEventListener('click', (e) => {
             e.preventDefault();
             const form = document.getElementById('formBody');
