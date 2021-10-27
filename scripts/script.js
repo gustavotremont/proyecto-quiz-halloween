@@ -1,93 +1,74 @@
+    //inicializacion de firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js";
+    import { getFirestore, collection, getDocs, setDoc, doc, addDoc, getDoc } from 'https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js';
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.1.2/firebase-auth.js';
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAhdfqYicrW1ARKH1um867kA-4tGXX0qno",
+        authDomain: "proyectoquizhalloween.firebaseapp.com",
+        projectId: "proyectoquizhalloween",
+        storageBucket: "proyectoquizhalloween.appspot.com",
+        messagingSenderId: "159271340949",
+        appId: "1:159271340949:web:467b879b062ac54868049c",
+        measurementId: "G-GX2L65LD06"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    
     //inicializacion de variables
     let correctAnswers;
     let selectAnswers;
     let count;
     let quiz;
     let concursant;
-
-
-
-
-    // Pagina log-in
-    const login = () => {
-        const log = document.createElement('section')
-        log.setAttribute('id', 'loggeate')
-        log.innerHTML = `
-        <div class='flex-container'>
-            <h2>Inicia sesión</h2>
-            <form id="inicioForm">
-                <label for="usuario">Usuario:</label><br>
-                <input type="text" id="usuario" required><br><br>
-                <label for="password">Contraseña:</label><br>
-                <input type="password" id="password" required><br><br>
-                <button id="inicioSesion">Entrar</button>
-                <button id="registro">Registrate</button>
-            </form>
-        </div>
-        `;
-        document.getElementById('gallery').appendChild(log)
-        document.getElementById('inicioSesion').addEventListener('click', () => {
-            if(document.getElementById('usuario').value != "" && document.getElementById('password').value != ""  ) { inicio() };
-        })
-        document.getElementById('registro').addEventListener('click', () => {
-            registrarse();
-        })
-    }
-
-    /* Pagina de sign-in */
-    const registrarse = () => {
-        document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1])
-        const sign = document.createElement('section')
-        sign.setAttribute('id', 'signin')
-        sign.innerHTML = `
-        <div class='flex-container'>
-            <h2>Nueva cuenta</h2>
-            <form id="registroForm">
-                <label for="usuario">Usuario:</label><br>
-                <input type="text" id="usuario" required><br><br>
-                <label for="correo">Email:</label><br>
-                <input type="email" id="correo" required><br><br>
-                <label for="password">Contraseña:</label><br>
-                <input type="password" id="password" required><br><br><br>
-                <button id="crearCuenta">Crear cuenta</button>
-            </form>
-        </div>
-        `;
-        document.getElementById('gallery').appendChild(sign)
-        document.getElementById('crearCuenta').addEventListener('click', () => {
-            if(document.getElementById('usuario').value != "" && document.getElementById('correo').value != ""  && document.getElementById('password').value != ""  ) { inicio() } 
-        })
-    }
+    let date;
 
     //pagina principal
-    const inicio = () => {
-        document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1])
+
+    const inicio = async() => {
+
+        const docRef = doc(db, "users", auth.currentUser.uid);
+        const docSnap = await getDoc(docRef);
         const template = document.createElement('section')
         template.setAttribute('id', 'inicio')
         template.innerHTML = `
         <div class='flex-container'>
-        <h2>BIENVENIDO AL QUIZ</h2>
-        <p id="fecha"><p>
-        <button id="startQuiz">Comenzar</button>
+           <h2><u>BIENVENIDO AL QUIZ</u></h2>
+            <p>${docSnap.data().nickname}</p>
+            <button id="startQuiz">Comenzar</button>
+            <button id="exitQuiz">Salir</button>
         </div>
         `;
         document.getElementById('gallery').appendChild(template)
-        //PARA SACAR LA FECHA DEL DIA QUE SE REALIZA EL QUIZ
-        let fecha = new Date();
-        let month = fecha.getUTCMonth() + 1;
-        let day = fecha.getUTCDate();
-        let year = fecha.getUTCFullYear();
-        document.getElementById("fecha").innerHTML = day+"/"+month+"/"+year;
         document.getElementById('startQuiz').addEventListener('click', () => {
-            if(document.getElementById('fecha').value != "") { startQuiz() };
+            document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1])
+            startQuiz(docSnap.username) 
+        })
+        document.getElementById('exitQuiz').addEventListener('click', (e) => {
+            e.preventDefault();
+            signOut(auth).then(() => {
+                alert('sesion acabada');
+                login();
+            }).catch((error) => alert(error.code, error.message) );
         })
     }
     
     //funcion para comenzar el quiz
-    const startQuiz = async () => {
+    const startQuiz = async (username) => {
         selectAnswers = [];
         count = 0;
         quiz = await getQuestions().then(data => data);
+        concursant = username;
+      
+      //PARA SACAR LA FECHA DEL DIA QUE SE REALIZA EL QUIZ
+        let fecha = new Date();
+        let month = fecha.getUTCMonth() + 1;
+        let day = fecha.getUTCDate();
+        let year = fecha.getUTCFullYear();
+        date = day+"/"+month+"/"+year;
+  
         playQuiz()
     }
     
@@ -120,15 +101,15 @@
             <h2 id="question">${quiz[count].question}</h2>
             <div id='answerContainer'>
                 <div id="respuestasAYB">
-                    <input type='radio' id='question_${count+1}_1' class="selector" name='question_${count+1}' value='${quiz[count].Answers[0]}'>
+                    <input type='radio' id='question_${count+1}_1' class="selector" name='question_${count+1}' value='${quiz[count].Answers[0].toLowerCase()}'>
                     <label for='question_${count+1}_1' class="firstAnswer">${quiz[count].Answers[0]}</label>
-                    <input type='radio' id='question_${count+1}_2' class="selector" name='question_${count+1}' value='${quiz[count].Answers[1]}'>
+                    <input type='radio' id='question_${count+1}_2' class="selector" name='question_${count+1}' value='${quiz[count].Answers[1].toLowerCase()}'>
                     <label for='question_${count+1}_2' class="secondAnswer">${quiz[count].Answers[1]}</label>
                 </div>
                 <div id="respuestasCYD">
-                    <input type='radio' id='question_${count+1}_3' class="selector" name='question_${count+1}' value='${quiz[count].Answers[2]}'>
+                    <input type='radio' id='question_${count+1}_3' class="selector" name='question_${count+1}' value='${quiz[count].Answers[2].toLowerCase()}'>
                     <label for='question_${count+1}_3' class="thirdAnswer">${quiz[count].Answers[2]}</label>
-                    <input type='radio' id='question_${count+1}_4' class="selector" name='question_${count+1}' value='${quiz[count].Answers[3]}'>
+                    <input type='radio' id='question_${count+1}_4' class="selector" name='question_${count+1}' value='${quiz[count].Answers[3].toLowerCase()}'>
                     <label for='question_${count+1}_4' class="fourthAnswer">${quiz[count].Answers[3]}</label>
                 </div>
             </div><br>
@@ -156,9 +137,7 @@
         for(let i = 0; i<10; i++) {
             if(selectAnswers[i] == correctAnswers[i]) score++;
         }
-        console.log(selectAnswers)
-        console.log(correctAnswers)
-        console.log(score)
+
         document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1]);
         const template = document.createElement('section')
         template.setAttribute('id', 'quiz')
@@ -172,6 +151,101 @@
         document.getElementById('submit').addEventListener('click', () => {
             inicio();
         })
+    }
+
+    const login = () => {
+      const log = document.createElement('section')
+        log.setAttribute('id', 'loggeate')
+        log.innerHTML = `
+        <div class='flex-container'>
+            <h2>Inicia sesión</h2>
+            <form id="formBody">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email">
+                
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password">
+                
+                <input type="submit" id="login" value="login">
+                <button id="singin">Sign In</button>
+            </form>
+        </div>
+        `;
+        document.getElementById('gallery').appendChild(log)
+    
+        document.getElementById('login').addEventListener('click', (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('formBody').email.value;
+            const pass = document.getElementById('formBody').password.value;
+
+            signInWithEmailAndPassword(auth, email, pass)
+            .then( () => {
+                document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1])
+                inicio() 
+            })
+            .catch( error => alert(error.code, error.message) );
+
+        })
+        document.getElementById('singin').addEventListener('click', () => singin() )
+    } 
+
+    const singin = () => {
+      
+      document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1])
+        const sign = document.createElement('section')
+        sign.setAttribute('id', 'signin')
+        sign.innerHTML = `
+        <div class='flex-container'>
+            <h2>Nueva cuenta</h2>
+            <form id="formBody">
+                <label for="nickname">Nickname</label>
+                <input type="text" id="nickname" name="nickname">
+
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email">
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password">
+                
+                <label for="repeatPassword">Repeat Password</label>
+                <input type="password" id="repeatPassword" name="repeatPassword">
+
+                <input type="submit" id="singinUser" value="singin">
+                <button id="backToLogin">Back To Login</button>
+            </form>
+        </div>
+        `;
+        document.getElementById('gallery').appendChild(sign)
+      
+        document.getElementById('singinUser').addEventListener('click', (e) => {
+            e.preventDefault();
+            const form = document.getElementById('formBody');
+            const username = form.nickname.value;
+            const email = form.email.value;
+            const pass = form.password.value
+            const repeatPass = form.repeatPassword.value
+
+            if( pass != "" && repeatPass != "" && pass === repeatPass){
+                
+                createUserWithEmailAndPassword(auth, email, pass)
+                .then( userCrentials => {
+                    const user = userCrentials.user
+
+                    setDoc(doc(db,"users",user.uid),{
+                        nickname: username,
+                        email: email
+                    });
+
+                    alert('usuario creado!')
+
+                    login()
+                })
+                .catch( error => alert(error.code, error.message) );
+                
+            }else alert('las contraseñas no coinciden')
+        })
+        document.getElementById('backToLogin').addEventListener('click', () => login())
     }
     
     login()
