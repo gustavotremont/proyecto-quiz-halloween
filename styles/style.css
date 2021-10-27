@@ -1,0 +1,211 @@
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Indie+Flower&display=swap');
+
+body {  
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    background-image: url(https://media.istockphoto.com/photos/jack-o-lanterns-in-spooky-forest-at-moonlight-halloween-picture-id1177824148?k=20&m=1177824148&s=612x612&w=0&h=mX4PgLy6hntUy_FRtG0byLlNStvEZuJbvCtyQBUoReQ=);
+}
+
+/* MODIFICACIÓN DEL DOM HOME */
+
+.flex-container{
+    display: flex;
+    flex-flow: column wrap-reverse;
+    align-content: center;
+    text-align: center;
+    color: black;
+    max-width: 350px;
+    margin: auto;
+    margin-top: 40px;
+    padding-bottom: 50px;
+    padding: 50px;
+    border-radius: 15px;   
+    background-color:rgba(12, 6, 6, 0.712);
+    box-shadow: 0.25em 0.25em 1em rgb(248, 80, 2);
+    color: rgba(9, 146, 238, 0.76);
+}
+
+h2{
+    font-family: 'Bebas Neue', cursive;
+    font-size: 30px;
+}
+
+#name {
+    border-radius: 9px;
+}
+
+#startQuiz {
+    margin: auto;
+    font-family: 'Indie Flower', cursive;
+    font-weight: bold;
+    box-shadow: 0.1em 0em 1em orange;
+}
+
+#startQuiz:hover {
+    background-color: rgba(9, 146, 238, 0.76);
+}
+
+/* MODIFICACIÓN DEL CUESTIONARIO */
+
+#answerContainer{
+    padding-left: 10px;
+}
+
+#questionContainer {
+    display: flex;
+    align-content: center;
+    flex-flow: column wrap-reverse;
+    text-align: center;
+    max-width: 550px;
+    margin: auto;
+    margin-top: 40px;
+    padding-bottom: 50px;
+    padding: 50px;
+    box-shadow: 0.1em 0em 1em orange;
+    border-radius: 15px; 
+    background-color: rgba(4, 3, 8, 0.808);
+}
+
+#question {
+    color: rgb(255, 168, 87);
+    text-shadow: 0.1em 0.1em  purple;
+}
+
+#respuestasAYB , #respuestasCYD{
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    
+}
+
+#next {
+    margin: auto;
+    font-family: 'Indie Flower', cursive;
+    font-weight: bold;
+    background-color: rgb(255, 255, 255);
+    border: none;
+    border-radius: 4px;
+}
+    
+#next:hover {
+    background-color: rgba(141, 7, 182, 0.795);
+   
+}
+.firstAnswer, .secondAnswer, .thirdAnswer, .fourthAnswer {
+    text-align: center;
+    padding: 15px;
+    max-width: 200px;
+    width: 100%;
+    font-family: 'Bebas Neue', cursive;
+    color:white;
+    font-size: 23px;
+    font-weight: bold;
+    text-shadow: 0.1em 0.15em black;
+    margin-right: 15px;
+    border-radius: 10px;
+}
+.firstAnswer {
+    background-color: rgba(141, 7, 182, 0.795);
+}
+
+.secondAnswer {
+    background-color: rgba(223, 132, 13, 0.795);
+}
+
+.thirdAnswer {
+    background-color: rgba(47, 211, 203, 0.795);
+}
+
+.fourthAnswer {
+    background-color: rgba(39, 70, 4, 0.795); 
+}
+
+.firstAnswer:hover, .secondAnswer:hover, .thirdAnswer:hover, .fourthAnswer:hover {
+    background-color: palegoldenrod;
+}
+
+.selector {
+    opacity: 0;
+    position: fixed;
+    width: 0;
+}
+
+input:checked + label{
+    background-color:rgb(238, 255, 0);
+    border-color: lightslategray;
+    box-shadow: 0.1em 0em 1em red;
+}
+
+/* MEDIA_QUERY */
+
+@media only screen and (max-width: 400px){
+    #respuestasAYB {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-bottom: 0;
+        padding-right: 10px;
+    }
+
+    #respuestasCYD {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 10px;
+        padding-right: 10px; 
+    }
+
+    #question{
+        font-size: 25px;
+    }
+
+    .firstAnswer, .thirdAnswer{
+        margin-bottom: 10px;
+    }
+}
+
+
+
+/* MODIFICACIÓN DE PUNTUACIÓN */
+
+#finalHeader{
+    color:white;
+    text-shadow: 0.15em 0.1em blue;
+}
+
+#finalParragraph{
+    font-family: 'Indie Flower', cursive;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0.1em 0.1em blue;
+}
+
+#finalScore {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 50px;
+    font-family: 'Bebas Neue', cursive;
+    height: 175px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    color: rgb(255, 255, 255);
+    background: #c02425;
+    background: -webkit-linear-gradient(to right, #c02425, #f0cb35); 
+    background: linear-gradient(to right, #c02425, #f0cb35);
+    text-shadow: 0.1em 0.01em rgb(2, 1, 1);
+    box-shadow: 0.15em 0em rgb(10, 9, 9);
+}
+
+#submit {
+    margin: auto;
+    font-family: 'Indie Flower', cursive;
+    font-weight: bold;
+    font-size: 16px;
+    background-color: rgb(255, 255, 255);
+    border: none;
+}

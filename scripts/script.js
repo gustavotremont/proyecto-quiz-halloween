@@ -1,18 +1,19 @@
-
+    //inicializacion de variables
     let correctAnswers;
     let selectAnswers;
     let count;
     let quiz;
     let concursant;
     
+    //pagina principal
     const inicio = () => {
         const template = document.createElement('section')
         template.setAttribute('id', 'inicio')
         template.innerHTML = `
         <div class='flex-container'>
-            <h2>Bienvanido al quiz</h2>
-            <label for="name">Escriba su nombre</label>
-            <input type="text" id="name">
+            <h2><u>BIENVENIDO AL QUIZ</u></h2>
+            <label for="name">Por favor, escriba su nombre :</label><br>
+            <input type="text" id="name"><br>
             <button id="startQuiz">Comenzar</button>
         </div>
         `;
@@ -22,6 +23,7 @@
         })
     }
     
+    //funcion para comenzar el quiz
     const startQuiz = async () => {
         selectAnswers = [];
         count = 0;
@@ -30,51 +32,57 @@
         playQuiz()
     }
     
+    //funcion para obtener las preguntas
     const getQuestions = async () => {
         const respond = await fetch('https://opentdb.com/api.php?amount=10&category=15&difficulty=medium&type=multiple');
         const data = await respond.json();
         correctAnswers = []
         const questions = data.results.map(({question, correct_answer, incorrect_answers}) => {
+<<<<<<< HEAD
             correctAnswers.push(correct_answer.toLowerCase())
+=======
+            correctAnswers.push(decodeHTMLEntities(correct_answer).toLowerCase())
+>>>>>>> 60e917772991abc456d94eb45647f60fac712570
             return {
                 question: question,
-                Answers: shuffleArray([...incorrect_answers, correct_answer])
+                Answers: shuffleArray([
+                    ...incorrect_answers.map(element => decodeHTMLEntities(element)), 
+                    decodeHTMLEntities(correct_answer) 
+                ])
             }
         })
+        console.log(questions)
         return questions
     }
     
+    //funcion que pinta la pregunta y añade la funcion a los botones
     const playQuiz = () => {
         document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1])
         const template = document.createElement('section')
         template.setAttribute('id', 'quiz')
         template.innerHTML = `
         <section id='questionContainer'>
-            <h2>${quiz[count].question}</h2>
+            <h2 id="question">${quiz[count].question}</h2>
             <div id='answerContainer'>
-                <div>
-                    <label for='question_${count+1}_1'>${quiz[count].Answers[0]}</label>
-                    <input type='radio' id='question_${count+1}_1' name='question_${count+1}' value='${quiz[count].Answers[0].toLowerCase()}'>
+                <div id="respuestasAYB">
+                    <input type='radio' id='question_${count+1}_1' class="selector" name='question_${count+1}' value='${quiz[count].Answers[0]}'>
+                    <label for='question_${count+1}_1' class="firstAnswer">${quiz[count].Answers[0]}</label>
+                    <input type='radio' id='question_${count+1}_2' class="selector" name='question_${count+1}' value='${quiz[count].Answers[1]}'>
+                    <label for='question_${count+1}_2' class="secondAnswer">${quiz[count].Answers[1]}</label>
                 </div>
-                <div>
-                    <label for='question_${count+1}_2'>${quiz[count].Answers[1]}</label>
-                    <input type='radio' id='question_${count+1}_2' name='question_${count+1}' value='${quiz[count].Answers[1].toLowerCase()}'>
+                <div id="respuestasCYD">
+                    <input type='radio' id='question_${count+1}_3' class="selector" name='question_${count+1}' value='${quiz[count].Answers[2]}'>
+                    <label for='question_${count+1}_3' class="thirdAnswer">${quiz[count].Answers[2]}</label>
+                    <input type='radio' id='question_${count+1}_4' class="selector" name='question_${count+1}' value='${quiz[count].Answers[3]}'>
+                    <label for='question_${count+1}_4' class="fourthAnswer">${quiz[count].Answers[3]}</label>
                 </div>
-                <div>
-                    <label for='question_${count+1}_3'>${quiz[count].Answers[2]}</label>
-                    <input type='radio' id='question_${count+1}_3' name='question_${count+1}' value='${quiz[count].Answers[2].toLowerCase()}'>
-                </div>
-                <div>
-                    <label for='question_${count+1}_4'>${quiz[count].Answers[3]}</label>
-                    <input type='radio' id='question_${count+1}_4' name='question_${count+1}' value='${quiz[count].Answers[3].toLowerCase()}'>
-                </div>
-            </div>
+            </div><br>
             <button id="next">Siguiente pregunta</button>
         </section>`;
         document.getElementById('gallery').appendChild(template)
         document.getElementById('next').addEventListener('click', () => {
             const selected = document.querySelector(`input[name="question_${count}"]:checked`)
-            selectAnswers.push(selected.value.toLowerCase())
+            selectAnswers.push(selected.value)
             if(count != 10) {
                 if(selected){
                     playQuiz() 
@@ -87,6 +95,7 @@
         count++
     }
     
+    //funcion para terminar el quiz
     const finishQuiz = () => {
         let score = 0;
         for(let i = 0; i<10; i++) {
@@ -100,9 +109,12 @@
         template.setAttribute('id', 'quiz')
         template.innerHTML = `
         <section id='questionContainer'>
-            <h2>Felicidades ${concursant}</h2>
-            <p>puntuación: ${score} de 10 preguntas<p>
-            <button id="submit">finalizar</button>
+            <h2 id="finalHeader">Felicidades ${concursant}</h2>
+            <div id="stats">
+                <p id="finalParragraph">Puntuación:<p>
+                <p id="finalScore">${score} /  10</p>
+            </div>
+            <button id="submit">Finalizar</button>
         </section>`;
         document.getElementById('gallery').appendChild(template)
         document.getElementById('submit').addEventListener('click', () => {
@@ -122,4 +134,21 @@
           array[j] = temp;
         }
         return array
+    }
+
+    //funcion para decodificar caracteres especiales
+    const decodeHTMLEntities = (str) => {
+
+        let element = document.createElement('div');
+
+        if(str && typeof str === 'string') {
+        // strip script/html tags
+        // str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
+        // str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
+            element.innerHTML = str;
+            str = element.textContent;
+            element.textContent = '';
+        }
+    
+        return str;
     }
