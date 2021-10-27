@@ -4,22 +4,82 @@
     let count;
     let quiz;
     let concursant;
-    
+
+
+
+
+    // Pagina log-in
+    const login = () => {
+        const log = document.createElement('section')
+        log.setAttribute('id', 'loggeate')
+        log.innerHTML = `
+        <div class='flex-container'>
+            <h2>Inicia sesión</h2>
+            <form id="inicioForm">
+                <label for="usuario">Usuario:</label><br>
+                <input type="text" id="usuario" required><br><br>
+                <label for="password">Contraseña:</label><br>
+                <input type="password" id="password" required><br><br>
+                <button id="inicioSesion">Entrar</button>
+                <button id="registro">Registrate</button>
+            </form>
+        </div>
+        `;
+        document.getElementById('gallery').appendChild(log)
+        document.getElementById('inicioSesion').addEventListener('click', () => {
+            if(document.getElementById('usuario').value != "" && document.getElementById('password').value != ""  ) { inicio() };
+        })
+        document.getElementById('registro').addEventListener('click', () => {
+            registrarse();
+        })
+    }
+
+    /* Pagina de sign-in */
+    const registrarse = () => {
+        document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1])
+        const sign = document.createElement('section')
+        sign.setAttribute('id', 'signin')
+        sign.innerHTML = `
+        <div class='flex-container'>
+            <h2>Nueva cuenta</h2>
+            <form id="registroForm">
+                <label for="usuario">Usuario:</label><br>
+                <input type="text" id="usuario" required><br><br>
+                <label for="correo">Email:</label><br>
+                <input type="email" id="correo" required><br><br>
+                <label for="password">Contraseña:</label><br>
+                <input type="password" id="password" required><br><br><br>
+                <button id="crearCuenta">Crear cuenta</button>
+            </form>
+        </div>
+        `;
+        document.getElementById('gallery').appendChild(sign)
+        document.getElementById('crearCuenta').addEventListener('click', () => {
+            if(document.getElementById('usuario').value != "" && document.getElementById('correo').value != ""  && document.getElementById('password').value != ""  ) { inicio() } 
+        })
+    }
+
     //pagina principal
     const inicio = () => {
+        document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1])
         const template = document.createElement('section')
         template.setAttribute('id', 'inicio')
         template.innerHTML = `
         <div class='flex-container'>
-            <h2><u>BIENVENIDO AL QUIZ</u></h2>
-            <label for="name">Por favor, escriba su nombre :</label><br>
-            <input type="text" id="name"><br>
-            <button id="startQuiz">Comenzar</button>
+        <h2>BIENVENIDO AL QUIZ</h2>
+        <p id="fecha"><p>
+        <button id="startQuiz">Comenzar</button>
         </div>
         `;
         document.getElementById('gallery').appendChild(template)
+        //PARA SACAR LA FECHA DEL DIA QUE SE REALIZA EL QUIZ
+        let fecha = new Date();
+        let month = fecha.getUTCMonth() + 1;
+        let day = fecha.getUTCDate();
+        let year = fecha.getUTCFullYear();
+        document.getElementById("fecha").innerHTML = day+"/"+month+"/"+year;
         document.getElementById('startQuiz').addEventListener('click', () => {
-            if(document.getElementById('name').value != "") { startQuiz() };
+            if(document.getElementById('fecha').value != "") { startQuiz() };
         })
     }
     
@@ -28,7 +88,6 @@
         selectAnswers = [];
         count = 0;
         quiz = await getQuestions().then(data => data);
-        concursant = document.getElementById('name').value;
         playQuiz()
     }
     
@@ -78,7 +137,7 @@
         document.getElementById('gallery').appendChild(template)
         document.getElementById('next').addEventListener('click', () => {
             const selected = document.querySelector(`input[name="question_${count}"]:checked`)
-            selectAnswers.push(selected.value)
+            selectAnswers.push(selected.value.toLowerCase())
             if(count != 10) {
                 if(selected){
                     playQuiz() 
@@ -105,21 +164,17 @@
         template.setAttribute('id', 'quiz')
         template.innerHTML = `
         <section id='questionContainer'>
-            <h2 id="finalHeader">Felicidades ${concursant}</h2>
-            <div id="stats">
-                <p id="finalParragraph">Puntuación:<p>
-                <p id="finalScore">${score} /  10</p>
-            </div>
+            <h2 id="finalHeader">Tu puntuación final es:</h2>
+            <p id="finalScore">${score} /  10</p>
             <button id="submit">Finalizar</button>
         </section>`;
         document.getElementById('gallery').appendChild(template)
         document.getElementById('submit').addEventListener('click', () => {
-            document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1])
-            inicio()
+            inicio();
         })
     }
     
-    inicio()
+    login()
     
     //Fisher-Yates algorith
     const shuffleArray = array => {
