@@ -57,17 +57,14 @@ h2{
     box-shadow: 0.2em 0.2em rgb(2, 2, 2);
 }
 
-#startQuiz {
+#startQuiz , #exitQuiz {
     margin: auto;
     font-family: 'Indie Flower', cursive;
     font-weight: bold;
     box-shadow: 0.1em 0em 1em orange;
 }
 
-#exitQuiz {
-    font-weight: bold;
-    box-shadow: 0.1em 0em 1em orange;
-}
+
 
 #startQuiz:hover, #inicioSesion:hover, #registro:hover , #crearCuenta:hover , #exitQuiz:hover{
     background-color: rgba(83, 136, 172, 0.76);
@@ -235,4 +232,15 @@ input:checked + label{
 
 #submit:hover {
     background-color: rgba(83, 136, 172, 0.76);
+}
+
+
+
+#chart1 {
+    background-color: white;
+    width: 100%;
+}
+
+.grafica {
+    width: 100%;
 }
