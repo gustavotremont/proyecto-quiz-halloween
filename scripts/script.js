@@ -49,7 +49,7 @@
             e.preventDefault();
             signOut(auth).then(() => {
                 alert('sesion acabada');
-                login(docSnap.data().nickname);
+                login();
             }).catch((error) => alert(error.code, error.message) );
         })
     }
