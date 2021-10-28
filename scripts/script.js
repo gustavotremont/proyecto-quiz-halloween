@@ -25,15 +25,30 @@
     let concursant;
     let date;
 
+    //funcion para pintar las plantillas html
+    const printHTML = (temp, id) => {
+        //nos aseguramos que haya algo dentro del gallery para poder borrarlo
+        if(document.getElementById('gallery').childNodes[1]){
+            document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1]);
+        }
+        //creamos el elemento section
+        const template = document.createElement('section');
+        //le asignamos su id correspondiente
+        template.setAttribute('id', id);
+        //le damos el valor con la plnatilla html que llamamos
+        template.innerHTML = temp;
+        //lo agregamos dentro del gallery
+        document.getElementById('gallery').appendChild(template);
+    }
+
     //pagina principal
-
     const inicio = async() => {
-
+        //sacamos los datos del usuario con su id
         const docRef = doc(db, "users", auth.currentUser.uid);
         const docSnap = await getDoc(docRef);
-        const template = document.createElement('section')
-        template.setAttribute('id', 'inicio')
-        template.innerHTML = `
+
+        //creamos el html del inicio
+        const template = `
         <div class='flex-container'>
            <h2>BIENVENIDO AL QUIZ</h2>
             <p>${docSnap.data().nickname}</p>
@@ -44,25 +59,27 @@
             </div><br><br>
             <button id="exitQuiz">Salir</button>
         </div>
-        
         `;
-        document.getElementById('gallery').appendChild(template)
+
+        //pintamos la plantilla
+        printHTML(template, 'inicio')
+        //funcion para pintar la grafica con la partidas del jugador
         nexoPintado();
-        document.getElementById('startQuiz').addEventListener('click', () => {
-            startQuiz(docSnap.username) 
-        })
+
+        //eventListerner para iniciar la partida
+        document.getElementById('startQuiz').addEventListener('click', () => startQuiz() )
+        
+        //eventListener para deslogearse
         document.getElementById('exitQuiz').addEventListener('click', (e) => {
             e.preventDefault();
             signOut(auth).then(() => {
                 alert('sesion acabada');
-                document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1]);
                 login();
             }).catch((error) => alert(error.code, error.message) );
         })
     }
 
-    //Funciones para pintar la grafica
-
+    //Funciones sacar los datos del jugador
     const sacarDatos = async() => {
         let puntajes = [];
         let fechas = [];
@@ -74,6 +91,7 @@
         return [puntajes,fechas];
     }
 
+    //funcion para pintar la grafica
     const opcionesGrafica = ([puntajes,fechas]) => {
         let datos_graficos = {
             labels: fechas,
@@ -90,18 +108,17 @@
         new Chartist.Line('#chart1', datos_graficos,options_graficos);
     }
 
+    //funcion para gestionar la grafica
     const nexoPintado = async() => {
         let nombres = await sacarDatos(data => data);
         opcionesGrafica(nombres);
     }
-
     
     //funcion para comenzar el quiz
-    const startQuiz = async (username) => {
+    const startQuiz = async () => {
         selectAnswers = [];
         count = 0;
         quiz = await getQuestions().then(data => data);
-        concursant = username;
       
       //PARA SACAR LA FECHA DEL DIA QUE SE REALIZA EL QUIZ
         let fecha = new Date();
@@ -134,10 +151,8 @@
     
     //funcion que pinta la pregunta y añade la funcion a los botones
     const playQuiz = () => {
-        document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1])
-        const template = document.createElement('section')
-        template.setAttribute('id', 'quiz')
-        template.innerHTML = `
+        //creamos el html de la pregunta correspondiente
+        const template = `
         <section id='questionContainer'>
             <h2 id="question">${quiz[count].question}</h2>
             <div id='answerContainer'>
@@ -156,54 +171,66 @@
             </div><br>
             <button id="next">Siguiente pregunta</button>
         </section>`;
-        document.getElementById('gallery').appendChild(template)
+        //pintamos el html
+        printHTML(template, 'quiz')
+
+        //eventListener para el boton de responder
         document.getElementById('next').addEventListener('click', () => {
+            //obtiene la repuesta seleccionada
             const selected = document.querySelector(`input[name="question_${count}"]:checked`)
+            //agregamos la repuesta seleccionada al array de repuestas
             selectAnswers.push(selected.value.toLowerCase())
+
+            //revisamos en que pregunta estamos
+            //si no hemos llegado a la ultima, continua el juego
             if(count != 10) {
+                //revisamos que una pregunta a sido seleccionada
                 if(selected){
                     playQuiz() 
                 }else alert('selecciona la pregunta')
             } else {
+                //si es la ultima pregunta, acaba el juego
                 finishQuiz()
             }
-            
         })
+        //sumamos 1 a nuestro contador
         count++
     }
     
     //funcion para terminar el quiz
     const finishQuiz = async() => {
+        //inicializamos la puntuacion
         let score = 0;
+        //revisamos cuantas preguntas son correctas, y sumamos
         for(let i = 0; i<10; i++) {
             if(selectAnswers[i] == correctAnswers[i]) score++;
         }
         
+        //añadimos la puntuacion a la subcollecion de partida, del usuario logeado
         const docRef = await addDoc(collection(db, "users", auth.currentUser.uid, "partida"), {
             fecha: date,
             puntuacion: score
         });
 
-        document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1]);
-        const template = document.createElement('section')
-        template.setAttribute('id', 'quiz')
-        template.innerHTML = `
+        const template = `
         <section id='questionContainer'>
             <h2 id="finalHeader">Tu puntuación final es:</h2>
             <p id="finalScore">${score} /  10</p>
             <button id="submit">Finalizar</button>
         </section>`;
-        document.getElementById('gallery').appendChild(template)
+        printHTML(template, 'quiz')
+
+        //boton para que el usuario vuelva a su pantalla
         document.getElementById('submit').addEventListener('click', () => {
             document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1]);
             inicio();
         })
     }
 
+    //funcion para pintar el login y sus eventListeners
     const login = () => {
-      const log = document.createElement('section')
-        log.setAttribute('id', 'loggeate')
-        log.innerHTML = `
+        //creamos el html del login
+        const template = `
         <div class='flex-container'>
             <h2>Inicia sesión</h2>
             <form id="formBody">
@@ -213,36 +240,38 @@
                 <label for="password">Password</label><br>
                 <input type="password" id="password" name="password"><br><br>
                 
-                <input type="submit" id="login" value="Log in">
-                <button id="singin">Sign In</button>
+                <input type="submit" id="login" value="Iniciar sesion">
+                <button id="signup">Registrarse</button>
             </form>
         </div>
         `;
-        document.getElementById('gallery').appendChild(log)
+        //pintamos el html del login
+        printHTML(template, 'loggeate');
     
+        //eventListener para logearse
         document.getElementById('login').addEventListener('click', (e) => {
             e.preventDefault();
 
+            //obtenemos el email y contraseña del usuario
             const email = document.getElementById('formBody').email.value;
             const pass = document.getElementById('formBody').password.value;
 
+            //funcion para logearse
             signInWithEmailAndPassword(auth, email, pass)
             .then( () => {
-                document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1])
                 inicio() 
             })
             .catch( error => alert(error.code, error.message) );
 
         })
-        document.getElementById('singin').addEventListener('click', () => singin() )
+
+        //eventListenr para enviar al usuario al sign in
+        document.getElementById('signup').addEventListener('click', () => signup() )
     } 
 
-    const singin = () => {
-      
-      document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1])
-        const sign = document.createElement('section')
-        sign.setAttribute('id', 'signin')
-        sign.innerHTML = `
+    const signup = () => {
+        //creamos el html del sign up
+        const template =  `
         <div class='flex-container'>
             <h2>Nueva cuenta</h2>
             <form id="formBody">
@@ -255,49 +284,54 @@
                 <label for="password">Password</label><br>
                 <input type="password" id="password" name="password"><br><br>
                 
-                <label for="repeatPassword">Repeat Password</label><br>
+                <label for="repeatPassword">Repite la contraseña Password</label><br>
                 <input type="password" id="repeatPassword" name="repeatPassword"><br><br>
 
-                <input type="submit" id="singinUser" value="Sign in">
-                <button id="backToLogin">Back To Login</button>
+                <input type="submit" id="signupUser" value="Crear usuario">
+                <button id="backToLogin">Volver</button>
             </form>
         </div>
         `;
-        document.getElementById('gallery').appendChild(sign)
+        //pintamos el html del login
+        printHTML(template, 'signin')
       
-        document.getElementById('singinUser').addEventListener('click', (e) => {
+        //eventListener para sign up
+        document.getElementById('signupUser').addEventListener('click', (e) => {
             e.preventDefault();
+
+            //obtenemos los valores
             const form = document.getElementById('formBody');
             const username = form.nickname.value;
             const email = form.email.value;
-            const pass = form.password.value
-            const repeatPass = form.repeatPassword.value
+            const pass = form.password.value;
+            const repeatPass = form.repeatPassword.value;
 
+            //revisamos que las contraseñas sean iguales
             if( pass != "" && repeatPass != "" && pass === repeatPass){
                 
+                //creamos el usuario con su email y contraseña
                 createUserWithEmailAndPassword(auth, email, pass)
                 .then( userCrentials => {
                     const user = userCrentials.user
 
+                    //agregamos al usuario a la base de datos, ligandolo con el id del usuario logeado
                     setDoc(doc(db,"users",user.uid),{
                         nickname: username,
                         email: email
                     });
 
                     alert('usuario creado!')
-
                     login()
                 })
                 .catch( error => alert(error.code, error.message) );
                 
             }else alert('las contraseñas no coinciden')
         })
-        document.getElementById('backToLogin').addEventListener('click', () => {
-            document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1]);
-            login()
-        } )
+        //eventListener oara volver al login
+        document.getElementById('backToLogin').addEventListener('click', () =>  login() )
     }
     
+    //cargar el login al inicio
     login()
     
     //Fisher-Yates algorith
@@ -317,7 +351,6 @@
         let element = document.createElement('div');
 
         if(str && typeof str === 'string') {
-        // strip script/html tags
         // str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
         // str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
             element.innerHTML = str;
