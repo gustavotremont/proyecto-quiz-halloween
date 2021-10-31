@@ -1,6 +1,6 @@
     //inicializacion de firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js";
-    import { getFirestore, collection, getDocs, setDoc, doc, addDoc, getDoc } from 'https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js';
+    import { getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc, query, orderBy } from 'https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js';
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.1.2/firebase-auth.js';
 
     const firebaseConfig = {
@@ -22,7 +22,6 @@
     let selectAnswers;
     let count;
     let quiz;
-    let concursant;
     let date;
 
     //funcion para pintar las plantillas html
@@ -84,7 +83,9 @@
     const sacarDatos = async() => {
         let puntajes = [];
         let fechas = [];
-        const querySnapshot = await getDocs(collection(db, "users", auth.currentUser.uid, "partida"));
+
+        const userRef = collection(db, "users", auth.currentUser.uid, "partida")
+        const querySnapshot = await getDocs(query(userRef, orderBy("fecha")))
         querySnapshot.forEach((doc) => {
             puntajes.push(doc.data().puntuacion);
             fechas.push(doc.data().fecha);
