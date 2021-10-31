@@ -27,9 +27,10 @@
 
     //funcion para pintar las plantillas html
     const printHTML = (temp, id) => {
+        const gallery = document.getElementById('gallery')
         //nos aseguramos que haya algo dentro del gallery para poder borrarlo
-        if(document.getElementById('gallery').childNodes[1]){
-            document.getElementById('gallery').removeChild(document.getElementById('gallery').childNodes[1]);
+        if(gallery.childNodes[1]){
+            gallery.removeChild(gallery.childNodes[1]);
         }
         //creamos el elemento section
         const template = document.createElement('section');
@@ -38,7 +39,7 @@
         //le damos el valor con la plnatilla html que llamamos
         template.innerHTML = temp;
         //lo agregamos dentro del gallery
-        document.getElementById('gallery').appendChild(template);
+        gallery.appendChild(template);
     }
 
     //pagina principal
