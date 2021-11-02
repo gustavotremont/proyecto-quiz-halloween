@@ -27,7 +27,7 @@ body {
     align-content: center;
     text-align: center;
     color: black;
-    max-width: 350px;
+    max-width: 600px;
     margin: auto;
     margin-top: 40px;
     padding-bottom: 50px;
@@ -46,6 +46,11 @@ h2{
     text-shadow: 0.1em 0.15em rgb(0, 0, 0);
 }
 
+.flex-container p {
+    font-size: 40px;
+    margin: 0 0 15px;
+}
+
 #fecha {
     font-family: 'Bebas Neue', cursive ;
     font-weight: bold;
@@ -62,9 +67,8 @@ h2{
     font-family: 'Indie Flower', cursive;
     font-weight: bold;
     box-shadow: 0.1em 0em 1em orange;
+    font-size: 20px;
 }
-
-
 
 #startQuiz:hover, #inicioSesion:hover, #registro:hover , #crearCuenta:hover , #exitQuiz:hover{
     background-color: rgba(83, 136, 172, 0.76);
