@@ -1,6 +1,6 @@
     //inicializacion de firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js";
-    import { getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc, query, orderBy } from 'https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js';
+    import { getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc, query, orderBy, Timestamp, limit } from 'https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js';
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.1.2/firebase-auth.js';
 
     const firebaseConfig = {
@@ -85,10 +85,13 @@
         let fechas = [];
 
         const userRef = collection(db, "users", auth.currentUser.uid, "partida")
-        const querySnapshot = await getDocs(query(userRef, orderBy("fecha")))
+        const querySnapshot = await getDocs(query(userRef, orderBy("fecha", "desc"), limit(5)))
         querySnapshot.forEach((doc) => {
-            puntajes.push(doc.data().puntuacion);
-            fechas.push(doc.data().fecha);
+            const data = doc.data();
+            const date = data.fecha.toDate()
+            const newDate = (date.getUTCDate())+"/"+(date.getUTCMonth()+1)+"/"+(date.getUTCFullYear());
+            puntajes.push(data.puntuacion);
+            fechas.push(newDate);
         });
         return [puntajes,fechas];
     }
@@ -210,7 +213,7 @@
         
         //añadimos la puntuacion a la subcollecion de partida, del usuario logeado
         const docRef = await addDoc(collection(db, "users", auth.currentUser.uid, "partida"), {
-            fecha: date,
+            fecha: Timestamp.fromDate(new Date(date)),
             puntuacion: score
         });
 
